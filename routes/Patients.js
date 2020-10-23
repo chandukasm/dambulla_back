@@ -32,7 +32,7 @@ router.post("/", async (req, res, next) => {
       tel: Joi.string(),
     };
   
-    const result = Joi.validate(req.body, scheama);
+    const result = Joi.validate(element, scheama);
     if (result.error) {
       console.log(result.error.details[0].message);
       res.status(400).send(result.error.details[0].message);
@@ -40,7 +40,7 @@ router.post("/", async (req, res, next) => {
       return;
     }
   
-    const { f_name, l_name, gender, dob, address, id, tel } = req.body;
+    const { f_name, l_name, gender, dob, address, id, tel } = element;
     const values = [f_name, l_name, dob, gender, address, id, tel];
     const query = `INSERT INTO patient(f_name, l_name, dob, gender,address,id,tel)VALUES($1,$2,$3,$4,$5,$6,$7) RETURNING *`;
   
