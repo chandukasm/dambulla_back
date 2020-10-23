@@ -36,6 +36,10 @@ app.post("/upload", upload.single("file"), (req, res, next) => {
     );
 });
 
+app.get("/", (req, res) => {
+  res.send("welcome to dambulla base hospitle");
+});
+
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
