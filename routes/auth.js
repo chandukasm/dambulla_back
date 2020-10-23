@@ -1,69 +1,52 @@
-// const express = require("express");
-// const router = express.Router();
-// const { Pool, Client } = require("pg");
-// const connectionString = "postgresql://postgres:eleos@localhost:5432/travel";
-// const bc = require("bcrypt");
-// const Joi = require("joi");
-// const jwt = require("jsonwebtoken");
-// const config = require("config");
+const express = require("express");
+const router = express.Router();
+const bc = require("bcrypt");
+const Joi = require("joi");
+const jwt = require("jsonwebtoken");
+const config = require("config");
+const pool = require("../components/connection");
 
-// const pool = new Pool({
-//   connectionString: connectionString
-// });
+//login
+router.get("/login", async (req, res) => {
+  console.log(req.body);
+  const username = req.body.username;
+  password = req.body.password;
 
-// const client = new Client({
-//   connectionString: connectionString
-// });
-// client.connect();
+  //request validation
+  const schema = {
+    username: Joi.string().required(),
+    password: Joi.string().required(),
+  };
 
-// //login
-// router.get("/", async (req, res) => {
-//   const email = req.body.email;
-//   password = req.body.password;
+  const result = Joi.validate(req.body, schema);
 
-//   //request validation
-//   const schema = {
-//     email: Joi.string()
-//       .email()
-//       .required(),
-//     password: Joi.string().required()
-//   };
+  if (result.error) {
+    res.status(400).send(result.error.details[0].message);
+    return;
+  }
+  //request validation//
 
-//   const result = Joi.validate(req.body, schema);
+  const values = [username];
+  const user = await pool.query(
+    "SELECT * FROM staff WHERE username=$1 ",
+    values
+  );
+  if (user.rowCount === 0) {
+    res.status(400).send("invalid username or password");
+    return;
+  }
+  const tokenUser = user.rows[0];
+  const sent_password = user.rows[0].password;
+  const validPassword = await bc.compare(req.body.password, sent_password);
+  if (validPassword) {
+    const token = jwt.sign(tokenUser, config.get("jwtPrivateKey"));
+    //generating the jsonwebtoken
 
-//   if (result.error) {
-//     res.status(400).send(result.error.details[0].message);
-//     return;
-//   }
-//   //request validation//
+    // res.status(200).send("you are logged in");
+    res.header("x-auth-token", token).status(200).send(token);
+  } else {
+    res.status(400).send("forbidden");
+  }
+});
 
-//   const values = [email];
-//   const user = await pool.query("SELECT * FROM staff WHERE email=$1 ", values);
-//   if (user.rowCount === 0) {
-//     res.status(400).send("invalid email or password");
-//     return;
-//   }
-//   const tokenUser = user.rows[0];
-//   const sent_password = user.rows[0].password;
-//   const validPassword = await bc.compare(req.body.password, sent_password);
-//   if (validPassword) {
-//     //generating the jsonwebtoken,{expiresIn:10}
-//     // const token = jwt.sign(
-//     //   tokenUser,
-//     //   config.get("jwtPrivateKey", { expiresIn: 60 })
-//     // );
-
-//     const token = jwt.sign(tokenUser, config.get("jwtPrivateKey"));
-//     //generating the jsonwebtoken
-
-//     // res.status(200).send("you are logged in");
-//     res
-//       .header("x-auth-token", token)
-//       .status(200)
-//       .send(token);
-//   } else {
-//     res.status(400).send("forbidden");
-//   }
-// });
-
-// module.exports = router;
+module.exports = router;

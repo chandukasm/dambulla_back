@@ -1,11 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const Joi = require("joi");
-const multer = require("multer");
 const pool = require("../components/connection");
+const multer = require("multer");
 
-router.get("/all", (req, res) => {
-  const query = `SELECT * from patient`;
+router.get("/:id/all", (req, res) => {
+  const id = req.params.id;
+  const query = `SELECT * from record where patient=${id}`;
 
   pool.query(query, (err, result) => {
     if (err) {
@@ -19,15 +20,9 @@ router.get("/all", (req, res) => {
 
 // add new patient id ,id is not available should generate a new uniquie one
 
-router.post("/", async (req, res, next) => {
+router.post("/:id", async (req, res, next) => {
   const scheama = {
-    f_name: Joi.string().min(2).required(),
-    l_name: Joi.string().min(2).required(),
-    dob: Joi.string().required(),
-    gender: Joi.string().required(),
-    address: Joi.string().min(3).required(),
-    id: Joi.string().min(5).required(),
-    tel: Joi.string(),
+    id: Joi.int().required(),
   };
 
   const result = Joi.validate(req.body, scheama);
@@ -38,9 +33,9 @@ router.post("/", async (req, res, next) => {
     return;
   }
 
-  const { f_name, l_name, gender, dob, address, id, tel } = req.body;
-  const values = [f_name, l_name, dob, gender, address, id, tel];
-  const query = `INSERT INTO patient(f_name, l_name, dob, gender,address,id,tel)VALUES($1,$2,$3,$4,$5,$6,$7) RETURNING *`;
+  const { id } = req.params;
+  const path = "/c/dambulla/patients/rec_name";
+  const query = `INSERT INTO record(patient,path)values(${id},'${path}') RETURNING *`;
 
   const result1 = await pool.query(query, values);
   res.status(200).send(result1.rows);
