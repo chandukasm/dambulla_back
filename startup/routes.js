@@ -15,7 +15,7 @@ module.exports = function (app) {
   // app.use("/api/auth", auth);
   // app.use("/api/traveler", traveler);
   app.use("/api/patient", patient);
-  app.use("/table/patient", patient);
+  app.use("/table", table);
   //a single place to hanle errors
   app.use(err); //not calling the function just passing  a reference to the function
 };
