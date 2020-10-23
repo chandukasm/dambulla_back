@@ -20,7 +20,7 @@ router.get("/all", (req, res) => {
 // add new patient id ,id is not available should generate a new uniquie one
 
 router.post("/", async (req, res, next) => {
-  req.body.array.forEach(async (element) => {
+  req.body.array.forEach((element) => {
     const scheama = {
       f_name: Joi.string().min(2).required(),
       l_name: Joi.string().min(2).required(),
@@ -43,8 +43,11 @@ router.post("/", async (req, res, next) => {
     const values = [f_name, l_name, dob, gender, address, id, tel];
     const query = `INSERT INTO patient(f_name, l_name, dob, gender,address,id,tel)VALUES($1,$2,$3,$4,$5,$6,$7) RETURNING *`;
 
-    const result1 = await pool.query(query, values);
-    res.status(200).send(result1.rows);
+    pool
+      .query(query, values)
+      .then((res) => res.status(200).send(res.rows))
+      .catch((e) => res.status(500).send(err));
+
     console.log(result1.rows);
   });
 
