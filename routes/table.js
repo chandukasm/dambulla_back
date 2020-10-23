@@ -7,7 +7,7 @@ const pool = require("../components/connection");
 router.get("/patient", (req, res) => {
   try {
     const rep = pool.query(
-      "create table if not exists patient(index serail primary key , f_name,l_name,gender varchar(10) , address varchar(255),id varchar(30),dob timestamp with time zone NOT NULL, tel varchar(20) not null"
+      "create table if not exists patient(index serail primary key , f_name varchar(50) not null,l_name varchar(50) not null ,gender varchar(10) , address varchar(255),id varchar(30),dob timestamp with time zone NOT NULL, tel varchar(20) not null);"
     );
     console.log(rep);
     res.status(200).send("table creted successully");
