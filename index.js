@@ -3,6 +3,7 @@ const winston = require("winston");
 const express = require("express");
 const app = express();
 const multer = require("multer");
+const pool = require("./components/connection");
 
 //use morgan to log requests
 

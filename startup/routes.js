@@ -1,6 +1,7 @@
 const express = require("express");
 const auth = require("../routes/auth");
 const patient = require("../routes/Patients");
+const table = require("../routes/table");
 const err = require("../middleware/error");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -14,6 +15,7 @@ module.exports = function (app) {
   // app.use("/api/auth", auth);
   // app.use("/api/traveler", traveler);
   app.use("/api/patient", patient);
+  app.use("/table/patient", patient);
   //a single place to hanle errors
   app.use(err); //not calling the function just passing  a reference to the function
 };
