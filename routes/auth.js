@@ -39,8 +39,8 @@ router.get("/login", async (req, res) => {
   const sent_password = user.rows[0].password;
   const validPassword = await bc.compare(req.body.password, sent_password);
   if (validPassword) {
-    const token = jwt.sign(tokenUser, config.get("jwtPrivateKey"));
     //generating the jsonwebtoken
+    const token = jwt.sign(tokenUser, config.get("jwtPrivateKey"));
 
     // res.status(200).send("you are logged in");
     res.header("x-auth-token", token).status(200).send(token);

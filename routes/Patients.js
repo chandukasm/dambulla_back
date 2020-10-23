@@ -3,8 +3,9 @@ const router = express.Router();
 const Joi = require("joi");
 const multer = require("multer");
 const pool = require("../components/connection");
+const authenticate = require("../middleware/authenticate");
 
-router.get("/all", (req, res) => {
+router.get("/all", authenticate, (req, res) => {
   const query = `SELECT * from patient`;
 
   pool.query(query, (err, result) => {
