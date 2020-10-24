@@ -5,7 +5,7 @@ const multer = require("multer");
 const pool = require("../components/connection");
 const authenticate = require("../middleware/authenticate");
 
-router.get("/all", authenticate, (req, res) => {
+router.get("/all", (req, res) => {
   const query = `SELECT * from patient`;
 
   pool.query(query, (err, result) => {
