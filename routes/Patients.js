@@ -2,8 +2,11 @@ const express = require("express");
 const router = express.Router();
 const Joi = require("joi");
 const multer = require("multer");
+const fileUpload = multer();
 const pool = require("../components/connection");
 const authenticate = require("../middleware/authenticate");
+var cloudinary = require("cloudinary").v2;
+const streamifier = require("streamifier");
 
 router.get("/all", (req, res) => {
   const query = `SELECT * from patient`;
@@ -48,6 +51,29 @@ router.post("/", async (req, res, next) => {
   console.log(result1.rows);
   // no need to add try catchs because express async errors monkypatchs the middleware
 });
+
+// router.post("/upload", fileUpload.single("image"), function (req, res, next) {
+//   let streamUpload = (req) => {
+//     return new Promise((resolve, reject) => {
+//       let stream = cloudinary.uploader.upload_stream((error, result) => {
+//         if (result) {
+//           resolve(result);
+//         } else {
+//           reject(error);
+//         }
+//       });
+
+//       streamifier.createReadStream(req.file.buffer).pipe(stream);
+//     });
+//   };
+
+//   async function upload(req) {
+//     let result = await streamUpload(req);
+//     console.log(result);
+//   }
+
+//   upload(req);
+// });
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
