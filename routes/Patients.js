@@ -5,8 +5,6 @@ const multer = require("multer");
 const fileUpload = multer();
 const pool = require("../components/connection");
 const authenticate = require("../middleware/authenticate");
-var cloudinary = require("cloudinary").v2;
-const streamifier = require("streamifier");
 
 router.get("/all", (req, res) => {
   const query = `SELECT * from patient`;
