@@ -7,8 +7,8 @@ const config = require("config");
 const pool = require("../components/connection");
 
 //login
-router.get("/login", async (req, res) => {
-  console.log(req.body);
+router.post("/login", async (req, res) => {
+  console.log("called", req.body);
   const username = req.body.username;
   password = req.body.password;
 
